@@ -4,14 +4,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyUrl.API", "TinyUrl.API\TinyUrl.API.csproj", "{80046CAE-E105-4653-AAEC-4F446D7F2203}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2} = {8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}
+		{B85331F2-95BE-407F-9750-BAF683A34CE3} = {B85331F2-95BE-407F-9750-BAF683A34CE3}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.Business", "TinyUrl.Business\TinyUrl.Business.csproj", "{B85331F2-95BE-407F-9750-BAF683A34CE3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8D7B28B7-3110-4E94-8679-846A2F30064E} = {8D7B28B7-3110-4E94-8679-846A2F30064E}
+		{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2} = {8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.Core", "TinyUrl.Core\TinyUrl.Core.csproj", "{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.Database", "TinyUrl.Database\TinyUrl.Database.csproj", "{0A37B3D6-4C42-4011-9551-044E2C2982FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2} = {8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.CQS", "TinyUrl.CQS\TinyUrl.CQS.csproj", "{8D7B28B7-3110-4E94-8679-846A2F30064E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0A37B3D6-4C42-4011-9551-044E2C2982FF} = {0A37B3D6-4C42-4011-9551-044E2C2982FF}
+		{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2} = {8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,8 +1,14 @@
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using System.Reflection;
 using System.Text;
+using TinyUrl.Business.Services;
+using TinyUrl.Core.Abstractions;
+using TinyUrl.CQS.Handlers.CommandHandlers;
 using TinyUrl.Database;
 
 namespace TinyUrl.API
@@ -36,9 +42,38 @@ namespace TinyUrl.API
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opt =>
+                {
+                    opt.RequireHttpsMetadata = false;
+                    opt.SaveToken = true;
+                    opt.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidIssuer = builder.Configuration["Token:Issuer"],
+                        ValidAudience = builder.Configuration["Token:Issuer"],
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:JwtSecret"])),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
+            // Add business services
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            //Add mediator handlers
+            builder.Services.AddMediatR(typeof(AddUserCommandHandler).Assembly);
 
             var app = builder.Build();
 

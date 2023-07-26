@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TinyUrl.Database.Entities
+﻿namespace TinyUrl.Database.Entities
 {
-    internal class Link
+    public class Link
     {
+        public Guid Id { get; set; }
+        public string OriginalUrl { get; set; }
+        public string ShortUrl { get; set; }
+        public DateTime UrlCreated { get; set; }
+        public bool IsEdited { get; set; }
+
+        public Guid UserId { get; set; }
+        public User User { get; set; }
     }
 }
