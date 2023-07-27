@@ -34,8 +34,4 @@
     <ProjectReference Include="..\TinyUrl.Database\TinyUrl.Database.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Responce\" />
-  </ItemGroup>
-
 </Project>

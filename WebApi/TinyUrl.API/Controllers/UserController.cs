@@ -33,6 +33,11 @@ namespace TinyUrl.API.Controllers
                 if (!model.Password.Equals(model.PasswordConfirmation))
                     throw new ArgumentNullException(nameof(model), "Different password and confirmed password");
 
+                bool isExistUserEmail = await _userService.IsExistEmailAsync(model.Email);
+
+                if (isExistUserEmail)
+                    throw new ArgumentException("The same entry already exists in the storage.", nameof(model));
+
                 var userDto = _mapper.Map<UserDto>(model);
 
                 if (userDto != null)                 
@@ -45,6 +50,16 @@ namespace TinyUrl.API.Controllers
                     }
                 }
                 return BadRequest(); // todo add Exception
+            }
+            catch (ArgumentNullException ex)
+            {
+                Log.Warning($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return BadRequest(new ErrorModel() { Message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Warning($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return Conflict(new ErrorModel { Message = ex.Message });
             }
             catch (Exception ex)
             {
