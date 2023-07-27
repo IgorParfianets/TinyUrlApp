@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using TinyUrl.API.Models.Request;
+using TinyUrl.API.Models.Responce;
+using TinyUrl.API.Utils;
 using TinyUrl.Core.Abstractions;
 using TinyUrl.Core.DataTransferObjects;
 
@@ -16,14 +19,16 @@ namespace TinyUrl.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IJwtUtil _jwtUtil;
 
         public UserController(IUserService userService,
-            IMapper mapper)
+            IMapper mapper,
+            IJwtUtil jwtUtil)
         {
             _userService = userService;
             _mapper = mapper;
+            _jwtUtil = jwtUtil;
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] RegistrationUserRequestModel model)
@@ -46,10 +51,13 @@ namespace TinyUrl.API.Controllers
 
                     if (result > 0)
                     {
-                        return Ok();
+                        var user = await _userService.GetUserByEmailAsync(model.Email);
+                        var response = await _jwtUtil.GenerateTokenAsync(user);
+
+                        return Ok(response);
                     }
                 }
-                return BadRequest(); // todo add Exception
+                throw new ArgumentNullException(nameof(model), "Some register data is incorrect.");
             }
             catch (ArgumentNullException ex)
             {
@@ -64,7 +72,7 @@ namespace TinyUrl.API.Controllers
             catch (Exception ex)
             {
                 Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
-                return StatusCode(500);
+                return StatusCode(500, (new ErrorModel() { Message = "Unexpected error on the server side." }));
             }
         }
     }

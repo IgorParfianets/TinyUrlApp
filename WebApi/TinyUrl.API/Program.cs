@@ -6,9 +6,12 @@ using Serilog;
 using Serilog.Events;
 using System.Reflection;
 using System.Text;
+using TinyUrl.API.Utils;
 using TinyUrl.Business.Services;
 using TinyUrl.Core.Abstractions;
+using TinyUrl.CQS.Commands;
 using TinyUrl.CQS.Handlers.CommandHandlers;
+using TinyUrl.CQS.Handlers.QueryHandlers;
 using TinyUrl.Database;
 
 namespace TinyUrl.API
@@ -71,9 +74,14 @@ namespace TinyUrl.API
 
             // Add business services
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IJwtUtil, JwtUtil>();
 
             //Add mediator handlers
             builder.Services.AddMediatR(typeof(AddUserCommandHandler).Assembly);
+            builder.Services.AddMediatR(typeof(AddRefreshTokenCommandHandler).Assembly);
+            builder.Services.AddMediatR(typeof(DeleteRefreshTokenCommandHandler).Assembly);
+            builder.Services.AddMediatR(typeof(GetUserByEmailQueryHandler).Assembly);
 
             var app = builder.Build();
 

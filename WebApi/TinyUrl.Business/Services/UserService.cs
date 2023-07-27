@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using TinyUrl.Core.Abstractions;
 using TinyUrl.Core.DataTransferObjects;
 using TinyUrl.CQS.Commands;
+using TinyUrl.CQS.Queries;
 using TinyUrl.Database.Entities;
 
 namespace TinyUrl.Business.Services
@@ -35,6 +36,28 @@ namespace TinyUrl.Business.Services
             var result = await _mediator.Send(new AddUserCommand() { User = entity });
             return result;
         }
+
+        public async Task<bool> IsExistEmailAsync(string email)
+        {
+            var user = await _mediator.Send(new GetUserByEmailQuery() { Email = email });
+            return user != null;
+        }
+
+        public async Task<UserDto> GetUserByEmailAsync(string email)
+        {
+            var user = await _mediator.Send(new GetUserByEmailQuery() { Email = email });
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<bool> CheckUserPasswordAsync(string email, string password)
+        {
+            var dbPasswordHash = (await _mediator.Send(new GetUserByEmailQuery() { Email = email }))
+                ?.PasswordHash;
+
+            return dbPasswordHash != null 
+                && CreateMd5(password).Equals(dbPasswordHash);
+        }
+
 
         private string CreateMd5(string password)
         {
