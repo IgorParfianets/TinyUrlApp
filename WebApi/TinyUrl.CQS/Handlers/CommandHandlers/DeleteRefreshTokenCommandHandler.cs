@@ -21,9 +21,9 @@ namespace TinyUrl.CQS.Handlers.CommandHandlers
 
             if (token != null)
             {
-                _context.RefreshTokens.Remove(token);
-                await _context.SaveChangesAsync();
+                _context.RefreshTokens.Remove(token);   
             }
+            await _context.SaveChangesAsync();
             return Unit.Value;
         }
     }

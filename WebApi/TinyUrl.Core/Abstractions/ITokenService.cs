@@ -3,6 +3,6 @@
     public interface ITokenService
     {
         Task<int> CreateRefreshTokenAsync(Guid tokenValue, Guid userId);
-        Task<int> RemoveRefreshTokenAsync(Guid tokenValue);
+        Task RemoveRefreshTokenAsync(Guid tokenValue);
     }
 }

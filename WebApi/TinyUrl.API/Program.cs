@@ -9,9 +9,9 @@ using System.Text;
 using TinyUrl.API.Utils;
 using TinyUrl.Business.Services;
 using TinyUrl.Core.Abstractions;
-using TinyUrl.CQS.Commands;
 using TinyUrl.CQS.Handlers.CommandHandlers;
 using TinyUrl.CQS.Handlers.QueryHandlers;
+using TinyUrl.CQS.Queries;
 using TinyUrl.Database;
 
 namespace TinyUrl.API
@@ -77,11 +77,12 @@ namespace TinyUrl.API
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IJwtUtil, JwtUtil>();
 
-            //Add mediator handlers
+            //Add mediator handlers 
             builder.Services.AddMediatR(typeof(AddUserCommandHandler).Assembly);
             builder.Services.AddMediatR(typeof(AddRefreshTokenCommandHandler).Assembly);
             builder.Services.AddMediatR(typeof(DeleteRefreshTokenCommandHandler).Assembly);
             builder.Services.AddMediatR(typeof(GetUserByEmailQueryHandler).Assembly);
+            builder.Services.AddMediatR(typeof(GetUserByRefreshTokenQueryHandler).Assembly);
 
             var app = builder.Build();
 
@@ -95,7 +96,6 @@ namespace TinyUrl.API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

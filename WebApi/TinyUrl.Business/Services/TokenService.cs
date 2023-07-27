@@ -26,9 +26,9 @@ namespace TinyUrl.Business.Services
             return result;
         }
 
-        public Task<int> RemoveRefreshTokenAsync(Guid tokenValue)
+        public async Task RemoveRefreshTokenAsync(Guid tokenValue)
         {
-            throw new NotImplementedException();
+            await _mediator.Send(new DeleteRefreshTokenCommand() { TokenValue = tokenValue });
         }
     }
 }

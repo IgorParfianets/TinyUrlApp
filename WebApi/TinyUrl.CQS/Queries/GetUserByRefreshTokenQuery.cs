@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using TinyUrl.Database.Entities;
 
 namespace TinyUrl.CQS.Handlers.QueryHandlers
 {
-    internal class GetUserByRefreshTokenQuery
+    public class GetUserByRefreshTokenQuery : IRequest<User?>
     {
+        public Guid RefreshToken { get; set; }
     }
 }

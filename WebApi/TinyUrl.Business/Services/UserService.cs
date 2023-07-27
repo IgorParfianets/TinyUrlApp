@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using TinyUrl.Core.Abstractions;
 using TinyUrl.Core.DataTransferObjects;
 using TinyUrl.CQS.Commands;
+using TinyUrl.CQS.Handlers.QueryHandlers;
 using TinyUrl.CQS.Queries;
 using TinyUrl.Database.Entities;
 
@@ -58,6 +59,15 @@ namespace TinyUrl.Business.Services
                 && CreateMd5(password).Equals(dbPasswordHash);
         }
 
+        public async Task<UserDto> GetUserByRefreshTokenAsync(Guid refreshToken)
+        {
+            var user = await _mediator.Send(new GetUserByRefreshTokenQuery() { RefreshToken = refreshToken });
+
+            if (user == null)
+                throw new ArgumentNullException("User doesn't exist", nameof(user));
+
+            return _mapper.Map<UserDto>(user);
+        }
 
         private string CreateMd5(string password)
         {
