@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TinyUrl.Database;
 
@@ -11,9 +12,11 @@ using TinyUrl.Database;
 namespace TinyUrl.Database.Migrations
 {
     [DbContext(typeof(TinyUrlContext))]
-    partial class TinyUrlContextModelSnapshot : ModelSnapshot
+    [Migration("20230729180210_Rename Link table to Urls")]
+    partial class RenameLinktabletoUrls
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +64,7 @@ namespace TinyUrl.Database.Migrations
                     b.Property<DateTime>("UrlCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Alias");
@@ -109,7 +112,9 @@ namespace TinyUrl.Database.Migrations
                 {
                     b.HasOne("TinyUrl.Database.Entities.User", "User")
                         .WithMany("Links")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

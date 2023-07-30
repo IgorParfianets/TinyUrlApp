@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using TinyUrl.API.Models.Request;
@@ -35,13 +34,16 @@ namespace TinyUrl.API.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 if (!model.Password.Equals(model.PasswordConfirmation))
-                    throw new ArgumentNullException(nameof(model), "Different password and confirmed password");
+                    return BadRequest(new ErrorModel() { Message = "Different password and confirmed password" });
 
                 bool isExistUserEmail = await _userService.IsExistEmailAsync(model.Email);
 
                 if (isExistUserEmail)
-                    throw new ArgumentException("The same entry already exists in the storage.", nameof(model));
+                    return Conflict(new ErrorModel() { Message = "The same entry already exists in the storage." }); 
 
                 var userDto = _mapper.Map<UserDto>(model);
 
@@ -57,7 +59,7 @@ namespace TinyUrl.API.Controllers
                         return Ok(response);
                     }
                 }
-                throw new ArgumentNullException(nameof(model), "Some register data is incorrect.");
+                return BadRequest(new ErrorModel() { Message = "Some register data is incorrect." });
             }
             catch (ArgumentNullException ex)
             {

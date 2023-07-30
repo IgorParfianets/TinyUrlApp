@@ -8,6 +8,6 @@
         public string Email { get; set; }
 
         public List<RefreshToken> RefreshTokens { get; set; }
-        public List<Link> Links { get; set; }
+        public List<Url> Links { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace TinyUrl.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public DbSet<Link> Links { get; set; }  
+        public DbSet<Url> Urls { get; set; }  
 
         public TinyUrlContext(DbContextOptions<TinyUrlContext> options) : base(options)
         {

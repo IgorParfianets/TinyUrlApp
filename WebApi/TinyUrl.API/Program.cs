@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -75,14 +76,19 @@ namespace TinyUrl.API
             // Add business services
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IUrlService, UrlService>();
             builder.Services.AddScoped<IJwtUtil, JwtUtil>();
 
-            //Add mediator handlers 
+            // Add mediator handlers 
             builder.Services.AddMediatR(typeof(AddUserCommandHandler).Assembly);
             builder.Services.AddMediatR(typeof(AddRefreshTokenCommandHandler).Assembly);
             builder.Services.AddMediatR(typeof(DeleteRefreshTokenCommandHandler).Assembly);
             builder.Services.AddMediatR(typeof(GetUserByEmailQueryHandler).Assembly);
             builder.Services.AddMediatR(typeof(GetUserByRefreshTokenQueryHandler).Assembly);
+            builder.Services.AddMediatR(typeof(AddUrlCommandHandler).Assembly);
+            builder.Services.AddMediatR(typeof(GetUrlByAliasQueryHandler).Assembly);
+            builder.Services.AddMediatR(typeof(DeleteUrlCommandByAliasHandler).Assembly); 
+            builder.Services.AddMediatR(typeof(GetAllUrlsByUserIdQueryHandler).Assembly);
 
             var app = builder.Build();
 
@@ -95,6 +101,7 @@ namespace TinyUrl.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

@@ -5,7 +5,7 @@ using TinyUrl.Database;
 
 namespace TinyUrl.CQS.Handlers.CommandHandlers
 {
-    public class DeleteRefreshTokenCommandHandler : IRequestHandler<DeleteRefreshTokenCommand, Unit>
+    public class DeleteRefreshTokenCommandHandler : IRequestHandler<DeleteRefreshTokenCommand, int>
     {
         private readonly TinyUrlContext _context;
 
@@ -14,7 +14,7 @@ namespace TinyUrl.CQS.Handlers.CommandHandlers
             _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteRefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(DeleteRefreshTokenCommand request, CancellationToken cancellationToken)
         {
             var token = await _context.RefreshTokens
                 .FirstOrDefaultAsync(token => token.Equals(request.TokenValue));
@@ -22,9 +22,8 @@ namespace TinyUrl.CQS.Handlers.CommandHandlers
             if (token != null)
             {
                 _context.RefreshTokens.Remove(token);   
-            }
-            await _context.SaveChangesAsync();
-            return Unit.Value;
+            }        
+            return await _context.SaveChangesAsync();
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TinyUrl.Database;
 
@@ -11,9 +12,11 @@ using TinyUrl.Database;
 namespace TinyUrl.Database.Migrations
 {
     [DbContext(typeof(TinyUrlContext))]
-    partial class TinyUrlContextModelSnapshot : ModelSnapshot
+    [Migration("20230729183644_Make nullable UserId in Url entity")]
+    partial class MakenullableUserIdinUrlentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

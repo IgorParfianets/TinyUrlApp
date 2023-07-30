@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TinyUrl.Database;
 
@@ -11,9 +12,11 @@ using TinyUrl.Database;
 namespace TinyUrl.Database.Migrations
 {
     [DbContext(typeof(TinyUrlContext))]
-    partial class TinyUrlContextModelSnapshot : ModelSnapshot
+    [Migration("20230728200452_Change primary key in Link entity")]
+    partial class ChangeprimarykeyinLinkentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,32 @@ namespace TinyUrl.Database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("TinyUrl.Database.Entities.Link", b =>
+                {
+                    b.Property<string>("ShortUrl")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OriginalUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UrlCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ShortUrl");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Links");
+                });
 
             modelBuilder.Entity("TinyUrl.Database.Entities.RefreshToken", b =>
                 {
@@ -39,36 +68,6 @@ namespace TinyUrl.Database.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
-                });
-
-            modelBuilder.Entity("TinyUrl.Database.Entities.Url", b =>
-                {
-                    b.Property<string>("Alias")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<bool>("IsEdited")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("OriginalUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShortUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UrlCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Alias");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Urls");
                 });
 
             modelBuilder.Entity("TinyUrl.Database.Entities.User", b =>
@@ -94,10 +93,10 @@ namespace TinyUrl.Database.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TinyUrl.Database.Entities.RefreshToken", b =>
+            modelBuilder.Entity("TinyUrl.Database.Entities.Link", b =>
                 {
                     b.HasOne("TinyUrl.Database.Entities.User", "User")
-                        .WithMany("RefreshTokens")
+                        .WithMany("Links")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -105,11 +104,13 @@ namespace TinyUrl.Database.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TinyUrl.Database.Entities.Url", b =>
+            modelBuilder.Entity("TinyUrl.Database.Entities.RefreshToken", b =>
                 {
                     b.HasOne("TinyUrl.Database.Entities.User", "User")
-                        .WithMany("Links")
-                        .HasForeignKey("UserId");
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
