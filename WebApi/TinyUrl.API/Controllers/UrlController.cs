@@ -8,9 +8,13 @@ using TinyUrl.API.Models.Request;
 using TinyUrl.API.Models.Responce;
 using TinyUrl.Core.Abstractions;
 using TinyUrl.Core.DataTransferObjects;
+using TinyUrl.Database.Entities;
 
 namespace TinyUrl.API.Controllers
 {
+    /// <summary>
+    ///     Controller that provides API endpoints for the Url resource.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class UrlController : ControllerBase
@@ -25,8 +29,18 @@ namespace TinyUrl.API.Controllers
             _urlService = linkService;
         }
 
+        /// <summary>
+        ///     Return all urls
+        /// </summary>
+        /// <returns>All urls by identifiers</returns>
+        /// <response code="200">Return all urls</response>
+        /// <response code="401">Failed to get user identifiers</response>
+        /// <response code="500">Unexpected error on the server side.</response>
         [HttpGet]
         [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<UrlDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -35,21 +49,34 @@ namespace TinyUrl.API.Controllers
 
                 var urls = await _urlService.GetAllUrlsByUserIdAsync(userId);
                 return Ok(urls);
-
             }
-            catch (AuthenticationException)
+            catch (AuthenticationException ex)
             {
-
-                throw;
+                Log.Warning($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return Unauthorized(new ErrorModel() { Message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return StatusCode(500, (new ErrorModel() { Message = "Unexpected error on the server side." }));
             }
         }
 
+        /// <summary>
+        ///     Create short url
+        /// </summary>
+        /// <param name="model">Contains original url and alias</param>
+        /// <returns>Original url and short url</returns>
+        /// <response code="201">Short url successfully created and returned</response>
+        /// <response code="400">Invalid inputed data</response>
+        /// <response code="401">Failed to get user identifier</response>
+        /// <response code="409">Alias already exists in storage</response>
+        /// <response code="500">Unexpected error on the server side.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(UrlResponceModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]     
         public async Task<IActionResult> CreateUrl([FromBody] UrlRequestModel model)
         {
             try
@@ -106,48 +133,77 @@ namespace TinyUrl.API.Controllers
                 Log.Warning("Some data is invalid");
                 return BadRequest(new ErrorModel() { Message = "Failed to create URL." });
             }
-            catch (AuthenticationException)
+            catch (AuthenticationException ex)
             {
-                throw;
+                Log.Warning($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return Unauthorized(new ErrorModel() { Message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return StatusCode(500, (new ErrorModel() { Message = "Unexpected error on the server side." }));
             }
         }
 
+        /// <summary>
+        ///     Remove url record
+        /// </summary>
+        /// <param name="alias">Part of name url</param>
+        /// <response code="204">Url successfully removed</response>
+        /// <response code="400">Alias cannot be empty</response>
+        /// <response code="404">Record with that alias not found</response>
+        /// <response code="500">Unexpected error on the server side.</response>
         [HttpDelete]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RemoveUrl(string alias)
         {
             try
             {
+                var userId = GetUserIdentifier();
+
                 if (string.IsNullOrEmpty(alias))
                 {
                     Log.Warning("Alias cannot be empty");
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException(nameof(alias));
                 }
 
-                int result = await _urlService.RemoveUrlByAlias(alias);
+                int result = await _urlService.RemoveUrlByAlias(alias, userId);
                 if(result > 0)
                 {
                     Log.Information("Url successfully deleted");
                     return NoContent();
                 }
-                return NotFound();
-            }
-            catch (ArgumentNullException)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
 
-                throw;
+                string message = $"Record with alias: {alias} not found.";
+                Log.Information(message);
+                return NotFound(new ErrorModel() { Message = message });
+            }
+            catch (AuthenticationException ex)
+            {
+                Log.Warning($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return Unauthorized(new ErrorModel() { Message = ex.Message });
+            }
+            catch (ArgumentNullException ex)
+            {
+                Log.Warning($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return BadRequest(new ErrorModel() { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return StatusCode(500, (new ErrorModel() { Message = "Unexpected error on the server side." }));
             }
         }
 
+        /// <summary>
+        ///     Return User identifier
+        /// </summary>
+        /// <returns>User identifier <see cref="Guid"></returns>
+        /// <exception cref="AuthenticationException">If failed to get user identifier</exception>
         private Guid GetUserIdentifier()
         {
             var userClaim = User.Claims

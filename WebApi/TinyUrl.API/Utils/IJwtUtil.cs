@@ -5,7 +5,7 @@ namespace TinyUrl.API.Utils
 {
     public interface IJwtUtil
     {
-        Task<TokenResponse> GenerateTokenAsync(UserDto dto);
+        Task<TokenResponseModel> GenerateTokenAsync(UserDto dto);
         Task RemoveRefreshTokenAsync(Guid requestRefreshToken);
     }
 }

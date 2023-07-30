@@ -10,7 +10,7 @@ using TinyUrl.Core.DataTransferObjects;
 namespace TinyUrl.API.Controllers
 {
     /// <summary>
-    /// Controller that provides API endpoints for the User resource.
+    ///     Controller that provides API endpoints for the User resource.
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -29,14 +29,24 @@ namespace TinyUrl.API.Controllers
             _jwtUtil = jwtUtil;
         }
 
+        /// <summary>
+        ///     Create user
+        /// </summary>
+        /// <param name="model">Contains user data</param>
+        /// <returns>Jwt token</returns>
+        /// <response code="200">User successfully created and returned jwt token</response>
+        /// <response code="400">Invalid inputed data</response>
+        /// <response code="409">User already exists in storage</response>
+        /// <response code="500">Unexpected error on the server side.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(TokenResponseModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] RegistrationUserRequestModel model)
         {
             try
             {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-
                 if (!model.Password.Equals(model.PasswordConfirmation))
                     return BadRequest(new ErrorModel() { Message = "Different password and confirmed password" });
 
@@ -46,7 +56,7 @@ namespace TinyUrl.API.Controllers
                     return Conflict(new ErrorModel() { Message = "The same entry already exists in the storage." }); 
 
                 var userDto = _mapper.Map<UserDto>(model);
-
+              
                 if (userDto != null)                 
                 {
                     var result = await _userService.RegisterUserAsync(userDto);

@@ -51,9 +51,9 @@ namespace TinyUrl.Business.Services
             return url?.OriginalUrl ?? string.Empty;
         }
         
-        public async Task<int> RemoveUrlByAlias(string alias)
+        public async Task<int> RemoveUrlByAlias(string alias, Guid userId)
         {
-            return await _mediator.Send(new DeleteUrlCommandByAlias() { Alias = alias});
+            return await _mediator.Send(new DeleteUrlCommandByAlias() { Alias = alias, UserId = userId});
         }
 
         public async Task<IEnumerable<UrlDto>> GetAllUrlsByUserIdAsync(Guid userId)

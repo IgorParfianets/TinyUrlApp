@@ -1,6 +1,6 @@
 ﻿namespace TinyUrl.API.Models.Responce
 {
-    public class TokenResponse
+    public class TokenResponseModel
     {
         public string AccessToken { get; set; }
         public Guid UserId { get; set; }

@@ -20,7 +20,7 @@ namespace TinyUrl.API.Utils
             _refreshTokenService = refreshTokenService;
         }
 
-        public async Task<TokenResponse> GenerateTokenAsync(UserDto dto)
+        public async Task<TokenResponseModel> GenerateTokenAsync(UserDto dto)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Token:JwtSecret"]));
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -47,7 +47,7 @@ namespace TinyUrl.API.Utils
 
             await _refreshTokenService.CreateRefreshTokenAsync(refreshTokenValue, dto.Id);
 
-            return new TokenResponse()
+            return new TokenResponseModel()
             {
                 AccessToken = accessToken,
                 TokenExpiration = jwtToken.ValidTo,

@@ -14,6 +14,8 @@ namespace TinyUrl.API.MappingProfiles
                 .ForMember(dto => dto.UrlCreated, opt => opt.MapFrom(model => DateTime.Now));
 
             CreateMap<UrlDto, Url>();
+
+            CreateMap<Url, UrlDto>();
         }
     }
 }
