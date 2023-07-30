@@ -9,24 +9,28 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyUrl.API", "TinyUrl.API\
 		{B85331F2-95BE-407F-9750-BAF683A34CE3} = {B85331F2-95BE-407F-9750-BAF683A34CE3}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.Business", "TinyUrl.Business\TinyUrl.Business.csproj", "{B85331F2-95BE-407F-9750-BAF683A34CE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyUrl.Business", "TinyUrl.Business\TinyUrl.Business.csproj", "{B85331F2-95BE-407F-9750-BAF683A34CE3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8D7B28B7-3110-4E94-8679-846A2F30064E} = {8D7B28B7-3110-4E94-8679-846A2F30064E}
 		{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2} = {8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.Core", "TinyUrl.Core\TinyUrl.Core.csproj", "{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyUrl.Core", "TinyUrl.Core\TinyUrl.Core.csproj", "{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.Database", "TinyUrl.Database\TinyUrl.Database.csproj", "{0A37B3D6-4C42-4011-9551-044E2C2982FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyUrl.Database", "TinyUrl.Database\TinyUrl.Database.csproj", "{0A37B3D6-4C42-4011-9551-044E2C2982FF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2} = {8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.CQS", "TinyUrl.CQS\TinyUrl.CQS.csproj", "{8D7B28B7-3110-4E94-8679-846A2F30064E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyUrl.CQS", "TinyUrl.CQS\TinyUrl.CQS.csproj", "{8D7B28B7-3110-4E94-8679-846A2F30064E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0A37B3D6-4C42-4011-9551-044E2C2982FF} = {0A37B3D6-4C42-4011-9551-044E2C2982FF}
 		{8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2} = {8DE47261-BD2E-41FB-9B45-4AD31AD6EBD2}
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DEE4D9A6-B44E-448D-8BC3-2DA7F156C42E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyUrl.Business.Tests", "TinyUrl.Business.Tests\TinyUrl.Business.Tests.csproj", "{BBA23D1A-A7A2-41E3-BCDB-BFBC4BCCC614}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,9 +58,16 @@ Global
 		{8D7B28B7-3110-4E94-8679-846A2F30064E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D7B28B7-3110-4E94-8679-846A2F30064E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D7B28B7-3110-4E94-8679-846A2F30064E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBA23D1A-A7A2-41E3-BCDB-BFBC4BCCC614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA23D1A-A7A2-41E3-BCDB-BFBC4BCCC614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA23D1A-A7A2-41E3-BCDB-BFBC4BCCC614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA23D1A-A7A2-41E3-BCDB-BFBC4BCCC614}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BBA23D1A-A7A2-41E3-BCDB-BFBC4BCCC614} = {DEE4D9A6-B44E-448D-8BC3-2DA7F156C42E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {861B8330-A501-4C48-8D69-5FB131FE7DA6}
