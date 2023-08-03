@@ -28,15 +28,15 @@ namespace TinyUrl.API
                 .WriteTo.File(GetPathToLogFile(),
                     LogEventLevel.Information));
 
-            string myCorsPolicyName = "ReactApp";
+            string myCorsPolicyName = "TinyUrl";
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(myCorsPolicyName, policyBuilder =>
                 {
                     policyBuilder
+                        .WithOrigins("http://localhost:3000") 
                         .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowAnyOrigin();
+                        .AllowAnyMethod();
                 });
             });
 
@@ -102,6 +102,7 @@ namespace TinyUrl.API
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+            app.UseCors(myCorsPolicyName);
             app.UseAuthorization();
 
             app.MapControllers();
