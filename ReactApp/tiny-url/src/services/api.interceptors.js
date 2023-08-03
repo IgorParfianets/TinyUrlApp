@@ -1,6 +1,9 @@
 import axios from "axios";
 import {getAccessToken} from "../helpers/auth.helper";
 import {environment} from "../enviroment/enviroment";
+import BadRequestError from "../models/errors/badRequest.error";
+import UnauthorizedError from "../models/errors/unauthorized.error";
+import ConflictError from "../models/errors/conflict.error";
 
 export const instance = axios.create({
     baseURL: environment.apiUrl,
@@ -8,7 +11,6 @@ export const instance = axios.create({
 })
 
 instance.interceptors.request.use(config => {
-    //todo here token keeping in cookie, maybe need keeping in redux or localStorage
     const accessToken = getAccessToken()
 
     if(config && config.headers && accessToken){
@@ -17,7 +19,17 @@ instance.interceptors.request.use(config => {
     return config
 })
 
-instance.interceptors.response.use(config => config, error => {
-    //todo making general errorHandler (to create some classes for every error)
-    console.log('error', error)
+instance.interceptors.response.use(config => config , error => {
+    const status = error.response.status
+
+    if (status === 400) {
+        throw new BadRequestError(error.message)
+    }
+    else if (status === 401) {
+        throw new UnauthorizedError(error.message)
+    }
+    else if (status === 409) {
+        throw new ConflictError(error.message)
+    }
+    return Promise.reject(error);
 })

@@ -15,12 +15,9 @@ export default function Login(){
 
     const clickHandler = async (data) => {
         if(isValid){
-            try{
-                await authService.login(data)
-                reset()
-            }catch (e){
-
-            }
+            const result = await authService.login(data)
+            console.log(result)
+            reset()
         }
     }
 

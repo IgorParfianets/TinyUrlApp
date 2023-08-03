@@ -2,6 +2,9 @@ import {instance} from "./api.interceptors";
 import Cookies from 'js-cookie'
 import {saveTokensStorage} from "../helpers/auth.helper";
 import {environment} from "../enviroment/enviroment";
+import BadRequestError from "../models/errors/badRequest.error";
+import TokenDto from "../models/dto/token.dto";
+import ConflictError from "../models/errors/conflict.error";
 
 export default class AuthService {
     constructor() {
@@ -9,39 +12,54 @@ export default class AuthService {
         this._tokenEndpoint = environment.tokenEndpoints
     }
     async login(data){
-
-        const response = await instance.post(
-            this._tokenEndpoint.createToken, data
-        )
-        return response
+        try{
+            const response = await instance.post(
+                this._tokenEndpoint.createToken, JSON.stringify(data)
+            )
+            const token = TokenDto.fromResponse(response.data)
+            return token
+        }catch (error){
+            if(error instanceof BadRequestError){
+                console.warn(error.message)
+            }
+        }
     }
 
     async registration(data){
-        const response = await instance.post(
-            this._userEndpoint, JSON.stringify(data)
-        )
-        if(response.data.accessToken)
-            saveTokensStorage(response.data)
+        try{
+            const response = await instance.post(
+                this._userEndpoint, JSON.stringify(data)
+            )
 
-        return response.data
+            if(response.data.accessToken)
+                saveTokensStorage(response.data)
+
+            const token = TokenDto.fromResponse(response.data)
+            return token
+        }catch (error){
+            if(error instanceof BadRequestError){
+                console.warn("Incorrect inputted data")
+                console.warn(error.message)
+            }
+            else if(error instanceof ConflictError){
+                console.warn("User already exists")
+                console.warn(error.message)
+            }
+        }
     }
 
-    async getNewTokens(){
+    async getTokenByRefreshToken(){
         const refreshToken = Cookies.get('refreshToken')
 
-        console.log(refreshToken)
         const response = await instance.post(
             this._tokenEndpoint.refreshToken,
-            {refreshToken},
-            {headers: {'Content-Type': 'application/json'}
-            })
-        console.log(response.data)
+            {refreshToken : refreshToken}
+            )
 
         if(response.data.accessToken)
             saveTokensStorage(response.data)
 
-        return response
+        const token = TokenDto.fromResponse(response.data)
+        return token
     }
-
-
 }

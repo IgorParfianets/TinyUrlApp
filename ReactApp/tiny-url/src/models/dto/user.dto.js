@@ -12,6 +12,9 @@ export default class UserDto {
     }
 
     static fromResponse(response) {
-        return new UserDto(response.id, response.email, null);
+        return new UserDto(
+            response.id,
+            response.email,
+            null);
     }
 }

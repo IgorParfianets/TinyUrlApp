@@ -18,12 +18,14 @@ export default function Registration(){
             password:'',
             passwordConfirmation:''}, criteriaMode: "all"})
 
-    const clickHandler = (data) => {
+    const clickHandler = async (data) => {
         if(isValid){
-            const response = authService.registration(data) // todo: need to decide why that data
-            if(response)
-                navigate('/')
+            const result = await authService.registration(data)
 
+            if(result){
+                navigate('/')
+                console.log(result)
+            }
             reset()
         }
     }
