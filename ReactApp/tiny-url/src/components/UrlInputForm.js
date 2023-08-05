@@ -1,12 +1,9 @@
 import {useForm} from "react-hook-form";
 import UrlService from "../services/url.service";
-import {useState} from "react";
-import {UrlFormData} from "../components/UrlFormData";
 
 const urlService = new UrlService()
 
-export default function Home(){
-    const [formData, setFormData] = useState(null)
+export function UrlInputForm({setFormData}) {
 
     const {
         register,
@@ -15,24 +12,25 @@ export default function Home(){
         formState: {
             isValid,
             errors,
-        }} = useForm({defaultValues: {originalUrl: '', alias: ''}, criteriaMode: 'all'})
+        }
+    } = useForm({
+            defaultValues:
+                {
+                    originalUrl: '',
+                    alias: ''
+                },
+            criteriaMode: 'all'
+        }
+    )
 
     const clickHandler = async (data) => {
-        if(isValid){
+        if (isValid) {
             const result = await urlService.createShortUrl(data)
 
-            if(result)
-                setFormData(result)
-            reset()
+            result
+                ? setFormData(result)
+                : reset()
         }
-    }
-
-    if(formData){
-        return <UrlFormData
-            originalUrl={formData.originalUrl}
-            shortUrl={formData.shortUrl}
-            setFormData={setFormData}
-        />
     }
 
     return (

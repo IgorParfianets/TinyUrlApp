@@ -1,14 +1,27 @@
 import {environment} from "../enviroment/enviroment";
 import {instance} from "./api.interceptors";
-import TokenDto from "../models/dto/token.dto";
 import BadRequestError from "../models/errors/badRequest.error";
 import UrlDto from "../models/dto/url.dto";
 import ConflictError from "../models/errors/conflict.error";
+import UnauthorizedError from "../models/errors/unauthorized.error";
 
 export default class UrlService{
     constructor() {
         this._urlEndpont = environment.urlEndpoint
-        this._tokenEndpoint = environment.tokenEndpoints
+    }
+
+    async getAllUrls(){
+        try{
+            const response = await instance.get(
+                this._urlEndpont
+            )
+            const urls = response.data.map(url => UrlDto.fromResponse(url))
+            return urls
+        }catch (error){
+            if(error instanceof UnauthorizedError){
+                console.error(error.message)
+            }
+        }
     }
 
     async createShortUrl(data){
@@ -29,8 +42,9 @@ export default class UrlService{
     }
     async removeShortUrl(alias){
         try{
+            const fullUrlWithParameters = `${this._urlEndpont}/${alias}`
             const response = await instance.delete(
-                this._urlEndpont, alias
+                fullUrlWithParameters
             )
             if(response.status === 204){
                 console.log('nice')

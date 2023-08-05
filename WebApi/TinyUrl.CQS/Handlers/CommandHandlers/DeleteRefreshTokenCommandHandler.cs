@@ -17,7 +17,7 @@ namespace TinyUrl.CQS.Handlers.CommandHandlers
         public async Task<int> Handle(DeleteRefreshTokenCommand request, CancellationToken cancellationToken)
         {
             var token = await _context.RefreshTokens
-                .FirstOrDefaultAsync(token => token.Equals(request.TokenValue));
+                .FirstOrDefaultAsync(token => token.Token.Equals(request.TokenValue));
 
             if (token != null)
             {

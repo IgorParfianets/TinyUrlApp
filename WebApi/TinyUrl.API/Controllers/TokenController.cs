@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using TinyUrl.API.Models.Request;
 using TinyUrl.API.Models.Responce;
@@ -124,6 +125,31 @@ namespace TinyUrl.API.Controllers
             {
                 Log.Warning($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
                 return BadRequest(new ErrorModel { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Validate access token.
+        /// </summary>
+        /// <returns>true if the token is valid</returns>
+        /// <response code="200">Returns true if the token is valid</response>
+        /// <response code="500">Unexpected error on the server side.</response>
+        [Route("Validate")]
+        [HttpPost]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public IActionResult ValidateToken()
+        {
+            try
+            {
+                return Ok(true);
+
             }
             catch (Exception ex)
             {

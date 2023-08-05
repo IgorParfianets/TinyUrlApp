@@ -1,11 +1,14 @@
 import {useForm} from "react-hook-form";
 import AuthService from "../services/auth.service";
 import {useNavigate} from "react-router-dom";
+import TokenDto from "../models/dto/token.dto";
+import useToken from "../utils/hooks/useToken";
 
 const authService = new AuthService()
 
 export default function Registration(){
     const navigate = useNavigate()
+    const {token, setToken} = useToken()
 
     const {register,
         handleSubmit,
@@ -20,14 +23,14 @@ export default function Registration(){
 
     const clickHandler = async (data) => {
         if(isValid){
-            const result = await authService.registration(data)
+            const token = await authService.registration(data)
 
-            if(result){
+            if(token instanceof TokenDto){
+                setToken(token)
                 navigate('/')
-                console.log(result)
             }
-            reset()
         }
+        reset()
     }
 
     return (

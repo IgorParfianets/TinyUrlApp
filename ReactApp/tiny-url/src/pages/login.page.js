@@ -1,9 +1,15 @@
 import {useForm} from "react-hook-form";
 import AuthService from "../services/auth.service";
+import {useNavigate} from "react-router-dom";
+import useToken from "../utils/hooks/useToken";
+import TokenDto from "../models/dto/token.dto";
 
 const authService = new AuthService()
 
 export default function Login(){
+    const navigate = useNavigate()
+    const {token, setToken} = useToken()
+
     const {
         register,
         handleSubmit,
@@ -11,14 +17,21 @@ export default function Login(){
         formState: {
             isValid,
             errors,
-        }} = useForm({defaultValues: {email: '', password: ''}, criteriaMode: 'all'})
+        }} = useForm(
+            {defaultValues:
+                    {email: '', password: ''},
+                criteriaMode: 'all'})
 
     const clickHandler = async (data) => {
         if(isValid){
-            const result = await authService.login(data)
-            console.log(result)
-            reset()
+            const token = await authService.login(data)
+
+            if(token instanceof TokenDto){
+                setToken(token)
+                navigate(-1)
+            }
         }
+        reset()
     }
 
     return (
