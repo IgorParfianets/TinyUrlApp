@@ -153,7 +153,7 @@ namespace TinyUrl.API.Controllers
         /// <response code="400">Alias cannot be empty</response>
         /// <response code="404">Record with that alias not found</response>
         /// <response code="500">Unexpected error on the server side.</response>
-        [HttpDelete]
+        [HttpDelete("{alias}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]

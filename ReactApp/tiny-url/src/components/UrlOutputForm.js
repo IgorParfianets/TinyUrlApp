@@ -1,5 +1,7 @@
+import useToken from "../utils/hooks/useToken";
 
-export function UrlFormData({originalUrl, shortUrl, setFormData }){
+export function UrlOutputForm({originalUrl, shortUrl, setFormData}) {
+    const {token, setToken} = useToken()
 
     const handleCopyClick = async () => {
         try {
@@ -20,6 +22,6 @@ export function UrlFormData({originalUrl, shortUrl, setFormData }){
             <br/>
             <button className="bg-sky-200 rounded" onClick={() => setFormData(null)}>Another one</button>
             <button className="bg-sky-200 rounded" onClick={handleCopyClick}>Copy</button>
-         </div>
+        </div>
     )
 }
