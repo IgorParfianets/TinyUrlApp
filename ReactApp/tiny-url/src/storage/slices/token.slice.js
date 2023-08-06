@@ -1,6 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { NIL } from 'uuid'
-import TokenDto from "../../models/dto/token.dto";
+import {createSlice} from '@reduxjs/toolkit'
+import {NIL} from 'uuid'
 
 export const tokenSlice = createSlice({
     name: 'token',
@@ -11,16 +10,15 @@ export const tokenSlice = createSlice({
         refreshToken: NIL,
     },
     reducers: {
-        setToken: (state, value) => {
-            if (value.payload instanceof TokenDto) {
-                let token = value.payload
-                state.accessToken = token.accessToken
-                state.userId = token.userId
-                state.tokenExpiration = token.tokenExpiration
-                state.refreshToken = token.refreshToken
-            }
+        setToken: (state, action) => {
+            const {accessToken, userId, tokenExpiration, refreshToken} = action.payload;
+
+            state.accessToken = accessToken
+            state.userId = userId
+            state.tokenExpiration = tokenExpiration
+            state.refreshToken = refreshToken
         },
-        removeToken: (state, value) => {
+        removeToken: (state) => {
             state.accessToken = null
             state.userId = NIL
             state.tokenExpiration = null
@@ -29,6 +27,6 @@ export const tokenSlice = createSlice({
     },
 })
 
-export const { setToken, removeToken } = tokenSlice.actions
+export const {setToken, removeToken} = tokenSlice.actions
 
 export default tokenSlice.reducer

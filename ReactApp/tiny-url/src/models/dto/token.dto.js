@@ -1,4 +1,4 @@
-import { NIL } from "uuid";
+import {NIL} from "uuid";
 
 export default class TokenDto {
     accessToken = "";
