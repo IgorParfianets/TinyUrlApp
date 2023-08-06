@@ -16,9 +16,6 @@ export default class AuthService {
             const response = await instance.post(
                 this._tokenEndpoint.createToken, JSON.stringify(data),
             )
-            // if (response.data.accessToken)
-            //     saveTokenData(response.data)
-
             const token = TokenDto.fromResponse(response.data)
             return token
         } catch (error) {
@@ -33,10 +30,6 @@ export default class AuthService {
             const response = await instance.post(
                 this._userEndpoint, JSON.stringify(data)
             )
-
-            // if (response.data.accessToken)
-            //     saveTokenData(response.data)
-
             const token = TokenDto.fromResponse(response.data)
             return token
         } catch (error) {

@@ -6,26 +6,30 @@ import useToken from "../utils/hooks/useToken";
 
 const authService = new AuthService()
 
-export default function Registration(){
+export default function Registration() {
     const navigate = useNavigate()
-    const {token, setToken} = useToken()
+    const {setToken} = useToken()
 
-    const {register,
+    const {
+        register,
         handleSubmit,
         reset,
         formState:
-            {isValid, errors}}
-        = useForm({defaultValues:{
-            username:'',
-            email:'',
-            password:'',
-            passwordConfirmation:''}, criteriaMode: "all"})
+            {isValid, errors}
+    }
+        = useForm({
+        defaultValues: {
+            username: '',
+            email: '',
+            password: '',
+            passwordConfirmation: ''
+        }, criteriaMode: "all"
+    })
 
-    const clickHandler = async (data) => {
-        if(isValid){
+    const handlerSubmitForm = async (data) => {
+        if (isValid) {
             const token = await authService.registration(data)
-
-            if(token instanceof TokenDto){
+            if (token instanceof TokenDto) {
                 setToken(token)
                 navigate('/')
             }
@@ -34,51 +38,80 @@ export default function Registration(){
     }
 
     return (
-        <div className="container mx-auto max-w-[500px]">
-            <h2>Registration</h2>
-            <div className="flex">
-                <form className="flex flex-col mt-3 py-4 px-2 gap-7 bg-sky-200" onSubmit={handleSubmit(clickHandler)}>
-                    <input
-                        {...register('username', {required:"Required username"})}
-                        type="text"
-                        placeholder="Enter username"/>
-                    {errors?.username && <p className="text-fuchsia-700">{errors.username.message}</p>}
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="bg-white p-8 rounded-lg shadow-md w-96">
+                <h2 className="text-2xl font-bold mb-4">Registration Form</h2>
+                <form onSubmit={handleSubmit(handlerSubmitForm)}>
+                    <div className="mb-4">
+                        <label htmlFor="username" className="block text-gray-800 font-medium">Username</label>
+                        <input
+                            {...register('username', {required: "Required username"})}
+                            id="username"
+                            className="w-full border rounded-lg py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            type="text"
+                            placeholder="Enter username"/>
+                        {errors?.username && <p className="text-red-700 font-thin">{errors.username.message}</p>}
+                    </div>
 
-                    <input
-                        {...register('email', {required:"Required email"})}
-                        type="text"
-                        placeholder="Enter email"/>
-                    {errors?.email && <p className="text-fuchsia-700">{errors.email.message}</p>}
+                    <div className="mb-4">
+                        <label htmlFor="email" className="block text-gray-800 font-medium">Email</label>
+                        <input
+                            {...register('email', {required: "Required email"})}
+                            id="email"
+                            type="text"
+                            className="w-full border rounded-lg py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter email"/>
+                        {errors?.email && <p className="text-red-700 font-thin">{errors.email.message}</p>}
+                    </div>
 
-                    <input
-                        {...register('password',
-                            {
-                                required:"Required password",
-                                minLength: {value: 5, message: 'Min 5 symbols'
-                                }})}
-                        type="password"
-                        placeholder="Enter Password"/>
-                    {errors?.password && <p className="text-fuchsia-700">{errors.password.message}</p>}
+                    <div className="mb-4">
+                        <label htmlFor="password" className="block text-gray-800 font-medium">Password</label>
+                        <input
+                            {...register('password',
+                                {
+                                    required: "Required password",
+                                    minLength: {
+                                        value: 5, message: 'Min 5 symbols'
+                                    }
+                                })}
+                            id="password"
+                            type="password"
+                            className="w-full border rounded-lg py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter Password"
+                            autoComplete="new-password"/>
+                        {errors?.password && <p className="text-red-700 font-thin">{errors.password.message}</p>}
+                    </div>
 
-                    <input
-                        {...register('passwordConfirmation',
-                            {
-                                required:"Required confirm password",
-                                minLength: {value: 5, message: 'Min 5 symbols'
-                                }})}
-                        type="password"
-                        placeholder="Enter confirm password"/>
-                    {errors?.passwordConfirmation && <p className="text-fuchsia-700">{errors.passwordConfirmation.message}</p>}
-                    <button type="submit">Submit</button>
+                    <div className="mb-4">
+                        <label htmlFor="confirmationPassword" className="block text-gray-800 font-medium">
+                            Password Confirmation
+                        </label>
+
+                        <input
+                            {...register('passwordConfirmation',
+                                {
+                                    required: "Required confirm password",
+                                    minLength: {
+                                        value: 5, message: 'Min 5 symbols'
+                                    }
+                                })}
+                            id="confirmationPassword"
+                            type="password"
+                            className="w-full border rounded-lg py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter confirm password"
+                            autoComplete="new-password"/>
+                        {errors?.passwordConfirmation &&
+                            <p className="text-red-700 font-thin">{errors.passwordConfirmation.message}</p>}
+                    </div>
+
+                    <div className="mb-6">
+                        <button type="submit"
+                                className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-600">
+                            Submit
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     )
 }
-
-// <input
-//     {...register('username', {required:"Required name"})}
-//     type="text"
-//     placeholder="Enter name"
-// />
-// {errors?.username && <p className="text-fuchsia-700">{errors.username.message}</p>}

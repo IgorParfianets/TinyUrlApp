@@ -8,7 +8,6 @@ const authService = new AuthService()
 
 export function AuthGuard({component}){
     const { token, setToken } = useToken();
-
     const navigate = useNavigate();
 
     useEffect(() => {

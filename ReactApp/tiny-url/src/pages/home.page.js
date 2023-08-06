@@ -1,11 +1,11 @@
 import {useState} from "react";
-import {UrlOutputForm} from "../components/UrlOutputForm";
-import {UrlInputForm} from "../components/UrlInputForm";
+import {UrlOutputForm} from "../components/url-output-form.component";
+import {UrlInputForm} from "../components/url-input-form.component";
 
-export default function Home(){
+export default function Home() {
     const [formData, setFormData] = useState(null)
 
-    if(formData){
+    if (formData) {
         return <UrlOutputForm
             originalUrl={formData.originalUrl}
             shortUrl={formData.shortUrl}
@@ -14,6 +14,4 @@ export default function Home(){
     }
 
     return <UrlInputForm setFormData={setFormData}/>
-
-
 }

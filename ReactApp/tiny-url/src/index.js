@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import ErrorPage from "./pages/error.page";
 import Home from "./pages/home.page";
 import Login from "./pages/login.page";
@@ -15,27 +15,27 @@ import store from "./storage/store";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
-        errorElement: <ErrorPage />,
+        element: <App/>,
+        errorElement: <ErrorPage/>,
         children: [
             {
                 errorElement: <div>Something goes wrong.</div>,
                 children: [
                     {
                         index: true,
-                        element: <Home />
+                        element: <Home/>
                     },
                     {
                         path: "/login",
-                        element: <Login />,
+                        element: <Login/>,
                     },
                     {
                         path: "/registration",
-                        element: <Registration />,
+                        element: <Registration/>,
                     },
                     {
                         path: "/urls",
-                        element: <AuthGuard component={Urls}/>
+                        element: <AuthGuard component={<Urls/>}/>
                     },
                 ],
             },
@@ -45,9 +45,9 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  //<React.StrictMode>
+    //<React.StrictMode>
     <Provider store={store}>
-        <RouterProvider router={router} />
+        <RouterProvider router={router}/>
     </Provider>
-  //</React.StrictMode>
+    //</React.StrictMode>
 )

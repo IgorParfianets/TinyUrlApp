@@ -1,15 +1,11 @@
 import {useForm} from "react-hook-form";
-import AuthService from "../services/auth.service";
-import {useNavigate} from "react-router-dom";
+import UrlService from "../services/url.service";
 import useToken from "../utils/hooks/useToken";
-import TokenDto from "../models/dto/token.dto";
 
-const authService = new AuthService()
+const urlService = new UrlService()
 
-export default function Login() {
-    const navigate = useNavigate()
-    const {setToken} = useToken()
-
+export function UrlInputForm({setFormData}) {
+    const {token} = useToken()
     const {
         register,
         handleSubmit,
@@ -18,57 +14,54 @@ export default function Login() {
             isValid,
             errors,
         }
-    } = useForm(
-        {
+    } = useForm({
             defaultValues:
-                {email: '', password: ''},
+                {
+                    originalUrl: '',
+                    alias: ''
+                },
             criteriaMode: 'all'
-        })
+        }
+    )
 
     const handlerSubmitForm = async (data) => {
         if (isValid) {
-            const token = await authService.login(data)
-
-            if (token instanceof TokenDto) {
-                setToken(token);
-                navigate('/');
-            }
+            const response = await urlService.createShortUrl(data, token.accessToken)
+            setFormData(response)
         }
-        reset()
     }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-4">Login Form</h2>
+                <h2 className="text-2xl font-bold mb-4">TinyURL Form</h2>
                 <form onSubmit={handleSubmit(handlerSubmitForm)}>
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-800 font-medium">Email</label>
+                        <label htmlFor="originalUrl" className="block text-gray-800 font-medium">Long URL</label>
                         <input
-                            {...register('email', {required: "Required email"})}
-                            id="email"
+                            {...register('originalUrl', {required: "Required long URL"})}
+                            id="originalUrl"
                             type="text"
                             className="w-full border rounded-lg py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Enter email"/>
-                        {errors?.email && <p className="text-red-700 font-thin">{errors.email.message}</p>}
+                            placeholder="Enter long URL"/>
+                        {errors?.originalUrl && <p className="text-red-700 font-thin">{errors.originalUrl.message}</p>}
                     </div>
 
                     <div className="mb-4">
-                        <label htmlFor="password" className="block text-gray-800 font-medium">Password</label>
+                        <label htmlFor="alias" className="block text-gray-800 font-medium">Alias</label>
                         <input
-                            {...register('password',
+                            {...register('alias',
                                 {
-                                    required: "Required password",
+                                    required: "Required alias",
                                     minLength: {
                                         value: 5, message: 'Min 5 symbols'
                                     }
                                 })}
-                            id="password"
-                            type="password"
+                            id="alias"
+                            type="text"
                             className="w-full border rounded-lg py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Enter Password"
-                            autoComplete="new-password"/>
-                        {errors?.password && <p className="text-red-700 font-thin">{errors.password.message}</p>}
+                            placeholder="Enter alias"/>
+                        {errors?.alias && <p className="text-red-700 font-thin">{errors.alias.message}</p>}
                     </div>
 
                     <div className="mb-6">
