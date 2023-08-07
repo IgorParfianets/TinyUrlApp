@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TinyUrl.Business\TinyUrl.Business.csproj" />
     <ProjectReference Include="..\TinyUrl.Core\TinyUrl.Core.csproj" />
   </ItemGroup>
 
