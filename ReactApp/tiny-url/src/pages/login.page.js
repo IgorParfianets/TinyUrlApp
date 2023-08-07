@@ -1,8 +1,9 @@
 import {useForm} from "react-hook-form";
-import AuthService from "../services/auth.service";
 import {useNavigate} from "react-router-dom";
+import AuthService from "../services/auth.service";
 import useToken from "../utils/hooks/useToken";
 import TokenDto from "../models/dto/token.dto";
+import BadRequestError from "../models/errors/badRequest.error";
 
 const authService = new AuthService()
 
@@ -27,11 +28,16 @@ export default function Login() {
 
     const handlerSubmitForm = async (data) => {
         if (isValid) {
-            const token = await authService.login(data)
-
-            if (token instanceof TokenDto) {
-                setToken(token);
-                navigate('/');
+            try{
+                const token = await authService.login(data)
+                if (token instanceof TokenDto) {
+                    setToken(token);
+                    navigate('/');
+                }
+            }catch (error){
+                if (error instanceof BadRequestError) {
+                    console.warn(error.message)
+                }
             }
         }
         reset()

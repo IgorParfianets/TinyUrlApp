@@ -12,48 +12,34 @@ export default class AuthService {
     }
 
     async login(data) {
-        try {
-            const response = await instance.post(
-                this._tokenEndpoint.createToken, JSON.stringify(data),
-            )
-            const token = TokenDto.fromResponse(response.data)
-            return token
-        } catch (error) {
-            if (error instanceof BadRequestError) {
-                console.warn(error.message)
-            }
-        }
+        const response = await instance.post(
+            this._tokenEndpoint.createToken, JSON.stringify(data),
+        )
+        return TokenDto.fromResponse(response.data)
     }
 
     async registration(data) {
-        try {
-            const response = await instance.post(
-                this._userEndpoint, JSON.stringify(data)
-            )
-            const token = TokenDto.fromResponse(response.data)
-            return token
-        } catch (error) {
-            if (error instanceof BadRequestError) {
-                console.warn("Incorrect inputted data")
-                console.warn(error.message)
-            } else if (error instanceof ConflictError) {
-                console.warn("User already exists")
-                console.warn(error.message)
-            }
-        }
+        const response = await instance.post(
+            this._userEndpoint, JSON.stringify(data)
+        )
+        return TokenDto.fromResponse(response.data)
     }
 
     async getTokenByRefreshToken(refreshToken) {
-        try {
+        try{
             const response = await instance.post(
                 this._tokenEndpoint.refreshToken,
                 {refreshToken: refreshToken},
             )
-            const token = TokenDto.fromResponse(response.data)
-            return token
-        } catch (error) {
-
+            return TokenDto.fromResponse(response.data)
+        }catch(error){
+            if(error.response.status === 401){
+                throw new UnauthorizedError(error.response.message)
+            } else if(error.response.status === 404){
+                throw new BadRequestError(error.response.message)
+            }
         }
+
     }
 
     async revokeRefreshToken(refreshToken) {
@@ -63,18 +49,17 @@ export default class AuthService {
     }
 
     async validateToken(accessToken) {
-        try {
-            let response = await instance.post(
+        try{
+            return await instance.post(
                 this._tokenEndpoint.validateToken,
                 {},
                 {headers: {'Authorization': `Bearer ${accessToken}`,}}
             );
-            if (response)
-                return true;
-        } catch (error) {
-            if (error instanceof UnauthorizedError) {
-                throw error;
+        }catch(error){
+            if(error.response.status === 401){
+                throw new UnauthorizedError(error.response.message)
             }
         }
+
     }
 }

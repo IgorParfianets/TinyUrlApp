@@ -142,14 +142,13 @@ namespace TinyUrl.API.Controllers
         [Route("Validate")]
         [HttpPost]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Boolean), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public IActionResult ValidateToken()
         {
             try
             {
                 return Ok(true);
-
             }
             catch (Exception ex)
             {

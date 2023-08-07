@@ -19,7 +19,7 @@ namespace TinyUrl.CQS.Handlers.QueryHandlers
             return (await _context.RefreshTokens
                 .Include(token => token.User)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(token => token.Equals(request.RefreshToken)))
+                .FirstOrDefaultAsync(token => token.Token.Equals(request.RefreshToken)))
                 ?.User;
         }
     }

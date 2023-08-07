@@ -1,6 +1,8 @@
 import {useForm} from "react-hook-form";
 import UrlService from "../services/url.service";
 import useToken from "../utils/hooks/useToken";
+import BadRequestError from "../models/errors/badRequest.error";
+import ConflictError from "../models/errors/conflict.error";
 
 const urlService = new UrlService()
 
@@ -26,8 +28,17 @@ export function UrlInputForm({setFormData}) {
 
     const handlerSubmitForm = async (data) => {
         if (isValid) {
-            const response = await urlService.createShortUrl(data, token.accessToken)
-            setFormData(response)
+            try{
+                const response = await urlService.createShortUrl(data, token.accessToken)
+                setFormData(response)
+            }catch (error) {
+                if (error instanceof BadRequestError) {
+                    console.warn(error.message)
+                } else if (error instanceof ConflictError) {
+                    console.warn(error.message)
+                }
+            }
+
         }
     }
 

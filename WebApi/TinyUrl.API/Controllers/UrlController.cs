@@ -8,7 +8,6 @@ using TinyUrl.API.Models.Request;
 using TinyUrl.API.Models.Responce;
 using TinyUrl.Core.Abstractions;
 using TinyUrl.Core.DataTransferObjects;
-using TinyUrl.Database.Entities;
 
 namespace TinyUrl.API.Controllers
 {
