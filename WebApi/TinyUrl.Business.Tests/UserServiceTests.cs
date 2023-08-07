@@ -15,12 +15,15 @@ namespace TinyUrl.Business.Tests
         [Fact]
         public void RegisterUserAsync_WithCorrectData_Return1()
         {
-            var dto = new UserDto()
-            string email = "8899b@gmail.com";
-            string password = "qwerty123";
-            string confirmPassword = "qwerty123";
+            //var dto = new UserDto()
+            //string email = "8899b@gmail.com";
+            //string password = "qwerty123";
+            //string confirmPassword = "qwerty123";
 
-            _mediatorMock.SetupSet(set => set.Send(new ))
+            //_mediatorMock.SetupSet(set => set.Send(new ))
         }
+
     }
 }
+
+

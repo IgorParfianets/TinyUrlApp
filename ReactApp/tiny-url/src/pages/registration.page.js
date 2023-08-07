@@ -1,8 +1,10 @@
 import {useForm} from "react-hook-form";
-import AuthService from "../services/auth.service";
 import {useNavigate} from "react-router-dom";
+import AuthService from "../services/auth.service";
 import TokenDto from "../models/dto/token.dto";
 import useToken from "../utils/hooks/useToken";
+import BadRequestError from "../models/errors/badRequest.error";
+import ConflictError from "../models/errors/conflict.error";
 
 const authService = new AuthService()
 
@@ -14,6 +16,7 @@ export default function Registration() {
         register,
         handleSubmit,
         reset,
+        watch,
         formState:
             {isValid, errors}
     }
@@ -25,13 +28,24 @@ export default function Registration() {
             passwordConfirmation: ''
         }, criteriaMode: "all"
     })
+    const passwordWatch = watch("password")
 
     const handlerSubmitForm = async (data) => {
         if (isValid) {
-            const token = await authService.registration(data)
-            if (token instanceof TokenDto) {
-                setToken(token)
-                navigate('/')
+            try {
+                const token = await authService.registration(data)
+                if (token instanceof TokenDto) {
+                    setToken(token)
+                    navigate('/')
+                }
+            } catch (error) {
+                if (error instanceof BadRequestError) {
+                    console.warn("Incorrect inputted data")
+                    console.warn(error.message)
+                } else if (error instanceof ConflictError) {
+                    console.warn("User already exists")
+                    console.warn(error.message)
+                }
             }
         }
         reset()
@@ -91,8 +105,9 @@ export default function Registration() {
                             {...register('passwordConfirmation',
                                 {
                                     required: "Required confirm password",
-                                    minLength: {
-                                        value: 5, message: 'Min 5 symbols'
+                                    validate: (value) => {
+                                        if (passwordWatch !== value)
+                                            return "Your passwords do no match"
                                     }
                                 })}
                             id="confirmationPassword"
