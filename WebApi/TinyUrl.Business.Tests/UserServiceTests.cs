@@ -89,14 +89,14 @@ namespace TinyUrl.Business.Tests
             {
                 Id = userId,
                 UserName = "Test",
-                Email = "test@google.com",
+                Email = "test@example.com",
                 PasswordHash = "ad1dsa2"
             };
             var expectedUserDto = new UserDto()
             {
                 Id = userId,
                 Username = "Test",
-                Email = "test@google.com",
+                Email = "test@example.com",
                 Password = "ad1dsa2"
             };
 
